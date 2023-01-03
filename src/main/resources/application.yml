@@ -31,10 +31,11 @@ spring:
             client-name: example-spring-security-oauth2-sso-opaque-token
             client-id: example-spring-security-oauth2-sso-opaque-token
             client-secret: example-spring-security-oauth2-sso-opaque-token-secret
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
-            # 本地开发环境需要指定uri，其他环境自动配置 {baseUrl}/login/oauth2/code/{registrationId}
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            # 注意是否包含 openid ，包含则会调用 oidcUserService 方法
+            # 并且和 opaquetoken 方式冲突
             scope:
               - read
               - write
@@ -52,10 +53,10 @@ spring:
             jwk-set-uri: ${app.oauth2.domain}/oauth2/jwks
       resourceserver:
         opaquetoken:
-          client-id: example-spring-security-oauth2-sso-opaque-token
-          client-secret: example-spring-security-oauth2-sso-opaque-token-secret
+          client-id: ${spring.security.oauth2.client.registration.toquery.client-id}
+          client-secret: ${spring.security.oauth2.client.registration.toquery.client-secret}
           introspection-uri: ${app.oauth2.domain}
 
 app:
   oauth2:
-    domain: http://localhost:8080/
+    domain: http://127.0.0.1:9000

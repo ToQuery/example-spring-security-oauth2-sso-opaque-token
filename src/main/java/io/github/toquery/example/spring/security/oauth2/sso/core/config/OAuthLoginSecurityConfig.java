@@ -38,7 +38,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 public class OAuthLoginSecurityConfig {
 
     @Bean
-    public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http,
+    public SecurityFilterChain oauth2LoginSecurityFilterChain(HttpSecurity http,
                                            OAuth2UserService<OidcUserRequest, OidcUser> appOidcUserService,
                                            OAuth2UserService<OAuth2UserRequest, OAuth2User> appOAuth2UserService,
                                            AuthenticationSuccessHandler appOAuth2AuthenticationSuccessHandler,

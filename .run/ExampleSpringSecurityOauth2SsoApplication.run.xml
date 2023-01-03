@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ExampleSpringSecurityOauth2SsoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="example-spring-security-oauth2-sso-opaque-token" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.github.toquery.example.spring.security.oauth2.sso.ExampleSpringSecurityOauth2SsoOpaqueTokenApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -2,6 +2,7 @@ package io.github.toquery.example.spring.security.oauth2.sso.core.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.toquery.example.spring.security.oauth2.sso.core.oauth2.JwtOpaqueTokenIntrospector;
 import io.github.toquery.example.spring.security.oauth2.sso.core.security.AppAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.introspection.NimbusOpaqueTokenIntrospector;
@@ -58,7 +60,7 @@ public class OAuthResourceSecurityConfig {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
         // 去掉 SCOPE_ 的前缀
-        authoritiesConverter.setAuthorityPrefix("");
+        // authoritiesConverter.setAuthorityPrefix("");
         // 从jwt claim 中那个字段获取权限，模式是从 scope 或 scp 字段中获取
         authoritiesConverter.setAuthoritiesClaimName("scope");
         converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
@@ -66,10 +68,12 @@ public class OAuthResourceSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http,
-                                           BearerTokenResolver bearerTokenResolver,
-                                           AccessDeniedHandler accessDeniedHandler,
-                                           AuthenticationEntryPoint appAuthenticationEntryPoint
+    public SecurityFilterChain oauth2ResourceServerSecurityFilterChain(
+            HttpSecurity http,
+            BearerTokenResolver bearerTokenResolver,
+            AccessDeniedHandler accessDeniedHandler,
+            OpaqueTokenIntrospector opaqueTokenIntrospector,
+            AuthenticationEntryPoint appAuthenticationEntryPoint
     ) throws Exception {
 
 
@@ -81,7 +85,9 @@ public class OAuthResourceSecurityConfig {
             // 处理认证失败、过期
             auth2ResourceServerConfigurer.authenticationEntryPoint(appAuthenticationEntryPoint);
 
-            auth2ResourceServerConfigurer.opaqueToken();
+            auth2ResourceServerConfigurer.opaqueToken(opaqueTokenConfigurer -> {
+                opaqueTokenConfigurer.introspector(opaqueTokenIntrospector);
+            });
         });
 
         return http.build();
@@ -89,9 +95,11 @@ public class OAuthResourceSecurityConfig {
 
 
     @Bean
-    public OpaqueTokenIntrospector opaqueTokenIntrospector(OAuth2ResourceServerProperties auth2ResourceServerProperties) {
-        OAuth2ResourceServerProperties.Opaquetoken opaquetoken = auth2ResourceServerProperties.getOpaquetoken();
-        return new NimbusOpaqueTokenIntrospector(opaquetoken.getIntrospectionUri(), opaquetoken.getClientId(), opaquetoken.getClientSecret());
+    public OpaqueTokenIntrospector opaqueTokenIntrospector(
+            OAuth2ResourceServerProperties auth2ResourceServerProperties,
+            ClientRegistrationRepository clientRegistrationRepository
+    ) {
+        return new JwtOpaqueTokenIntrospector(auth2ResourceServerProperties, clientRegistrationRepository);
     }
 
 
