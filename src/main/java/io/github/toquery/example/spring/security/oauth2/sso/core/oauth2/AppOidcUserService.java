@@ -13,22 +13,8 @@ public class AppOidcUserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        OidcUser oidcUser = super.loadUser(userRequest);
-        return oidcUser;
+        return super.loadUser(userRequest);
     }
 
-//    @Override
-//    public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-//        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-//
-//        try {
-//            OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-//            return new DefaultOAuth2User(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")), oAuth2UserInfo.getAttributes(), "username");
-//        } catch (AuthenticationException ex) {
-//            throw ex;
-//        } catch (Exception ex) {
-//            // Throwing an instance of AuthenticationException will trigger the OAuth2AuthenticationFailureHandler
-//            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
-//        }
-//    }
+
 }

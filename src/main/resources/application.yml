@@ -19,13 +19,13 @@ spring:
     oauth2:
       client:
         registration:
-#          github:
-#            clientId: xxx
-#            clientSecret: xxx
-#            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
-#            scope:
-#              - user:email
-#              - read:user
+          github:
+            clientId: ${OAUTH_GITHUB_CLIENT_ID}
+            clientSecret: ${OAUTH_GITHUB_CLIENT_SECRET}
+            scope:
+#              - openid
+              - user:email
+              - read:user
           toquery:
             provider: toquery
             client-name: example-spring-security-oauth2-sso-opaque-token
